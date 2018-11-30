@@ -42,16 +42,6 @@
       <sch:assert test="$row_item_count = $default_row_item_count">The row item count = <sch:value-of select="$row_item_count"/> on alternative set #<sch:value-of select="$alt_row_entries_index"/> does not match default row item count = <sch:value-of select="$default_row_item_count"/>.</sch:assert>
     </sch:rule>
     
-    <!--
-    <sch:rule context="//CustomControlName">
-      <sch:let name="control_name" value="text()"/>
-      <sch:let name="local_control" value="ancestor::View[1]/Controls/Control/Name[text() = $control_name]"/>
-      <sch:let name="global_control" value="/Configuration/Controls/Control/Name[text() = $control_name]"/>
-      
-      <sch:assert test="$local_control or $global_control">A control named <sch:value-of select="$control_name"/> is not defined.</sch:assert>
-    </sch:rule>
-    -->
-    
   </sch:pattern>
   
 </sch:schema>
