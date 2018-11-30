@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar 
+    xmlns="http://relaxng.org/ns/structure/1.0"
+    xmlns:sch="http://purl.oclc.org/dsdl/schematron"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+    
+    <start>
+        <element name="Types">
+            <ref name="Types"/>
+        </element>    
+    </start>
+    
+    <define name="Types">
+        <zeroOrMore>
+            <element name="Type">
+                <ref name="Type"/>
+            </element>
+        </zeroOrMore>
+    </define>
+    
+    <define name="Type">
+        <interleave>
+            
+            <element name="Name">
+                <ref name="MandatoryString"/>
+            </element>
+            
+            <optional>
+                <element name="Members">
+                    <ref name="Members"/>
+                </element>
+            </optional>
+            
+            <optional>
+                <element name="TypeConverter">
+                    <ref name="TypeConverter"/>
+                </element>
+            </optional>
+            
+            <optional>
+                <element name="TypeAdapter">
+                    <ref name="TypeAdapter"/>
+                </element>
+            </optional>
+            
+            <sch:pattern>
+                <sch:rule context="/Types/Type">
+                    <sch:assert test="Members or TypeConverter or TypeAdapter">
+                        Either of Members, TypeConverter or TypeAdapter is required.
+                    </sch:assert>
+                </sch:rule>
+            </sch:pattern>
+            
+        </interleave>
+    </define>
+    
+    <define name="Members">
+        <zeroOrMore>
+            <choice>
+                
+                <element name="NoteProperty">
+                    <ref name="NoteProperty"/>
+                </element>
+                
+                <element name="AliasProperty">
+                    <ref name="AliasProperty"/>
+                </element>
+                
+                <element name="ScriptProperty">
+                    <ref name="ScriptProperty"/>
+                </element>
+                
+                <element name="CodeProperty">
+                    <ref name="CodeProperty"/>
+                </element>
+                
+                <element name="ScriptMethod">
+                    <ref name="ScriptMethod"/>
+                </element>
+                
+                <element name="CodeMethod">
+                    <ref name="CodeMethod"/>
+                </element>
+                
+                <element name="PropertySet">
+                    <ref name="PropertySet"/>
+                </element>
+                
+                <element name="MemberSet">
+                    <ref name="MemberSet"/>
+                </element>
+                
+            </choice>
+        </zeroOrMore>
+    </define>
+    
+    <define name="NoteProperty">
+        <interleave>
+
+            <element name="Name">
+                <ref name="MandatoryString"/>
+            </element>
+            
+            <element name="Value">
+                <ref name="MandatoryString"/>
+            </element>
+            
+            <optional>
+                <element name="TypeName">
+                    <ref name="MandatoryString"/>
+                </element>
+            </optional>
+
+        </interleave>
+
+        <ref name="IsHiddenAttribute"/>
+    </define>
+    
+    <define name="AliasProperty">
+        <interleave>
+            
+            <element name="Name">
+                <ref name="MandatoryString"/>
+            </element>
+            
+            <element name="ReferencedMemberName">
+                <ref name="MandatoryString"/>
+            </element>
+            
+            <optional>
+                <element name="TypeName">
+                    <ref name="MandatoryString"/>
+                </element>
+            </optional>           
+            
+        </interleave>
+
+        <ref name="IsHiddenAttribute"/>
+    </define>
+    
+    <define name="ScriptProperty">
+        <interleave>
+            
+            <element name="Name">
+                <ref name="MandatoryString"/>
+            </element>
+            
+            <optional>
+                <element name="GetScriptBlock">
+                    <ref name="MandatoryString"/>
+                </element>
+            </optional>
+            
+            <optional>
+                <element name="SetScriptBlock">
+                    <ref name="MandatoryString"/>
+                </element>
+            </optional>           
+            
+            <sch:pattern>
+                <sch:rule context="//ScriptProperty">
+                    <sch:assert test="GetScriptBlock or SetScriptBlock">
+                        Either of GetScriptBlock or SetScriptBlock is required.
+                    </sch:assert>
+                </sch:rule>
+            </sch:pattern>
+            
+        </interleave>
+
+        <ref name="IsHiddenAttribute"/>
+    </define>
+    
+    <define name="CodeProperty">
+        <interleave>
+            
+            <element name="Name">
+                <ref name="MandatoryString"/>
+            </element>
+            
+            <optional>
+                <element name="GetCodeReference">
+                    <ref name="CodeReference"/>
+                </element>
+            </optional>
+            
+            <optional>
+                <element name="SetCodeReference">
+                    <ref name="CodeReference"/>
+                </element>
+            </optional>
+            
+            <sch:pattern>
+                <sch:rule context="//CodeProperty">
+                    <sch:assert test="GetCodeReference or SetCodeReference">
+                        Either of GetCodeReference or SetCodeReference is required.
+                    </sch:assert>
+                </sch:rule>
+            </sch:pattern>
+            
+        </interleave>
+        
+        <ref name="IsHiddenAttribute"/>
+    </define>
+    
+    <define name="ScriptMethod">
+        <interleave>
+            
+            <element name="Name">
+                <ref name="MandatoryString"/>
+            </element>
+
+            <element name="Script">
+                <ref name="MandatoryString"/>
+            </element>            
+
+        </interleave>
+    </define>
+    
+    <define name="CodeMethod">
+        <interleave>
+            
+            <element name="Name">
+                <ref name="MandatoryString"/>
+            </element>
+            
+            <element name="CodeReference">
+                <ref name="CodeReference"/>
+            </element>
+            
+        </interleave>
+    </define>
+    
+    <define name="PropertySet">
+        <interleave>
+            
+            <element name="Name">
+                <ref name="MandatoryString"/>
+            </element>
+            
+            <element name="ReferencedProperties">
+                <zeroOrMore>
+                    <element name="Name">
+                        <ref name="MandatoryString"/>
+                    </element>
+                </zeroOrMore>
+            </element>
+            
+        </interleave>
+        
+        <ref name="IsHiddenAttribute"/>
+    </define>
+    
+    <define name="MemberSet">
+        <interleave>
+            
+            <element name="Name">
+                <ref name="MandatoryString"/>
+            </element>
+            
+            <optional>
+                <element name="InheritMembers">
+                    <data type="boolean"/>
+                </element>
+            </optional>
+            
+            <optional>
+                <element name="Members">
+                    <ref name="Members"/>
+                </element>
+            </optional>
+            
+        </interleave>
+        
+        <ref name="IsHiddenAttribute"/>
+    </define>
+    
+    <define name="TypeConverter">
+        <element name="TypeName">
+            <ref name="MandatoryString"/>
+        </element>
+    </define>
+    
+    <define name="TypeAdapter">
+        <element name="TypeName">
+            <ref name="MandatoryString"/>
+        </element>
+    </define>
+    
+    <define name="CodeReference">
+        <interleave>
+            
+            <element name="TypeName">
+                <ref name="MandatoryString"/>
+            </element>
+            
+            <element name="MethodName">
+                <ref name="MandatoryString"/>
+            </element>
+            
+        </interleave>
+    </define>
+    
+    <define name="MandatoryString">
+        <data type="string">
+            <param name="minLength">1</param>
+        </data>
+    </define>
+    
+    <define name="IsHiddenAttribute">
+        <optional>
+            <attribute name="IsHidden">
+                <data type="boolean"/>
+            </attribute>
+        </optional>
+    </define>
+    
+    <sch:schema queryBinding="xslt2">
+        <sch:pattern>
+            <sch:rule context="/Types/Type/Members/MemberSet[Name = 'PSStandardMembers']/Members/*/Name">
+                <sch:let name="ValidStandardMemberNames" value="'DefaultDisplayProperty'"/>
+                <sch:let name="ValidStandardMemberNames" value="$ValidStandardMemberNames,'DefaultDisplayPropertySet'"/>
+                <sch:let name="ValidStandardMemberNames" value="$ValidStandardMemberNames,'DefaultKeyPropertySet'"/>
+                <sch:let name="ValidStandardMemberNames" value="$ValidStandardMemberNames,'SerializationMethod'"/>
+                <sch:let name="ValidStandardMemberNames" value="$ValidStandardMemberNames,'SerializationDepth'"/>
+                <sch:let name="ValidStandardMemberNames" value="$ValidStandardMemberNames,'StringSerializationSource'"/>
+                <sch:let name="ValidStandardMemberNames" value="$ValidStandardMemberNames,'PropertySerializationSet'"/>
+                <sch:let name="ValidStandardMemberNames" value="$ValidStandardMemberNames,'InheritPropertySerializationSet'"/>
+                <sch:let name="ValidStandardMemberNames" value="$ValidStandardMemberNames,'TargetTypeForDeserialization'"/>
+                
+                <sch:assert test="index-of($ValidStandardMemberNames, text())">'<sch:value-of select="Name"/>' is invalid name.</sch:assert>
+            </sch:rule>
+            
+            <sch:rule context="/Types/Type/Members/MemberSet[Name = 'PSStandardMembers']/Members/*[Name = 'DefaultDisplayProperty']">
+                <sch:assert test="local-name() = 'NoteProperty'">DefaultDisplayProperty must be NoteProperty.</sch:assert>
+            </sch:rule>
+            
+            <sch:rule context="/Types/Type/Members/MemberSet[Name = 'PSStandardMembers']/Members/*[Name = 'DefaultDisplayPropertySet']">
+                <sch:assert test="local-name() = 'PropertySet'">DefaultDisplayPropertySet must be PropertySet.</sch:assert>
+            </sch:rule>
+            
+            <sch:rule context="/Types/Type/Members/MemberSet[Name = 'PSStandardMembers']/Members/*[Name = 'DefaultKeyPropertySet']">
+                <sch:assert test="local-name() = 'PropertySet'">DefaultKeyPropertySet must be PropertySet.</sch:assert>
+            </sch:rule>
+            
+            <sch:rule context="/Types/Type/Members/MemberSet[Name = 'PSStandardMembers']/Members/*[Name = 'SerializationMethod']">
+                <sch:assert test="local-name() = 'NoteProperty'">SerializationMethod must be NoteProperty.</sch:assert>
+            </sch:rule>
+            
+            <sch:rule context="/Types/Type/Members/MemberSet[Name = 'PSStandardMembers']/Members/*[Name = 'SerializationDepth']">
+                <sch:assert test="local-name() = 'NoteProperty'">SerializationDepth must be NoteProperty.</sch:assert>
+                <sch:assert test="Value castable as xs:nonNegativeInteger">SerializationDepth must be non negative integer.</sch:assert>
+            </sch:rule>
+            
+            <sch:rule context="/Types/Type/Members/MemberSet[Name = 'PSStandardMembers']/Members/*[Name = 'PropertySerializationSet']">
+                <sch:assert test="local-name() = 'PropertySet'">PropertySerializationSet must be PropertySet.</sch:assert>
+            </sch:rule>
+            
+            <sch:rule context="/Types/Type/Members/MemberSet[Name = 'PSStandardMembers']/Members/*[Name = 'InheritPropertySerializationSet']">
+                <sch:assert test="local-name() = 'NoteProperty'">InheritPropertySerializationSet must be NoteProperty.</sch:assert>
+                <sch:assert test="Value castable as xs:boolean">InheritPropertySerializationSet must be boolean.</sch:assert>
+            </sch:rule>
+            
+            <sch:rule context="/Types/Type/Members/MemberSet[Name = 'PSStandardMembers']/Members/*[Name = 'TargetTypeForDeserialization']">
+                <sch:assert test="local-name() = 'NoteProperty'">TargetTypeForDeserialization must be NoteProperty.</sch:assert>
+            </sch:rule>
+            
+        </sch:pattern>
+    </sch:schema>
+    
+</grammar>

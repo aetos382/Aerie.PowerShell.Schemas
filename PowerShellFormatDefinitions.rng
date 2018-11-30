@@ -1,0 +1,808 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grammar
+  xmlns="http://relaxng.org/ns/structure/1.0"
+  datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+
+  <start>
+    <element name="Configuration">
+      <ref name="Configuration"/>
+    </element>
+  </start>
+
+  <define name="Configuration">
+    <interleave>
+      
+      <optional>
+        <element name="DefaultSettings">
+          <ref name="DefaultSettings"/>            
+        </element>
+      </optional>
+      
+      <optional>
+        <element name="SelectionSets">
+          <ref name="TypeGroups"/>
+        </element>
+      </optional>
+      
+      <optional>
+        <element name="ViewDefinitions">
+          <ref name="ViewDefinitions"/>
+        </element>
+      </optional>
+
+      <optional>
+        <element name="Controls">
+          <ref name="ControlDefinitions"/>
+        </element>
+      </optional>
+
+    </interleave>
+  </define>
+
+  <define name="ViewDefinitions">
+    <zeroOrMore>
+      <element name="View">
+        <ref name="View"/>
+      </element>
+    </zeroOrMore>
+  </define>
+
+  <define name="View">
+    <interleave>
+      
+      <!-- CommonViewData -->
+      <element name="Name">
+        <ref name="MandatoryString"/>
+      </element>
+
+      <element name="ViewSelectedBy">
+        <ref name="AppliesToSection"/>
+      </element>
+
+      <optional>
+        <element name="GroupBy">
+          <ref name="GroupBySection"/>
+        </element>
+      </optional>
+      <!-- /CommonViewData -->
+
+      <choice>
+        
+        <element name="TableControl">
+          <ref name="TableControl"/>          
+        </element>
+        
+        <element name="ListControl">
+          <ref name="ListControl"/>  
+        </element>
+        
+        <element name="WideControl">
+          <ref name="WideControl"/>          
+        </element>
+        
+        <element name="CustomControl">
+          <ref name="ComplexControl"/>
+        </element>
+        
+      </choice>
+      
+      <!-- MainControlDependentData -->
+      <optional>
+        <element name="OutOfBand">
+          <empty/>
+        </element>
+      </optional>
+      
+      <optional>
+        <element name="Controls">
+          <ref name="ControlDefinitions"/>
+        </element>
+      </optional>
+      <!-- /MainControlDependentData -->
+
+    </interleave>
+  </define>
+
+  <define name="GroupBySection">
+    <interleave>
+      
+      <ref name="ExpressionNodeMatch"/>
+      
+      <optional>
+        <choice>
+          
+          <ref name="ComplexControlMatch"/>
+          
+          <element name="Label">
+            <ref name="TextToken"/>
+          </element>
+          
+        </choice>
+      </optional>
+    </interleave>
+  </define>
+
+  <define name="TableControl">
+    <interleave>
+
+      <optional>
+        <element name="AutoSize">
+          <ref name="BooleanValue"/>
+        </element>
+      </optional>
+
+      <optional>
+        <element name="HideTableHeaders">
+          <ref name="BooleanValue"/>
+        </element>
+      </optional>
+
+      <optional>
+        <element name="TableHeaders">
+          <ref name="HeadersSection"/>
+        </element>
+      </optional>
+
+      <element name="TableRowEntries">
+        <ref name="RowEntriesSection"/>
+      </element>
+
+    </interleave>
+  </define>
+
+  <define name="HeadersSection">
+    <zeroOrMore>
+      <element name="TableColumnHeader">
+        <ref name="ColumnHeaderDefinition"/>
+      </element>
+    </zeroOrMore>
+  </define>
+
+  <define name="ColumnHeaderDefinition">
+    <interleave>
+
+      <optional>
+        <element name="Label">
+          <ref name="TextToken"/>
+        </element>
+      </optional>
+
+      <optional>
+        <element name="Width">
+          <data type="positiveInteger"/>
+        </element>
+      </optional>
+
+      <optional>
+        <element name="Alignment">
+          <ref name="AlignmentValue"/>
+        </element>
+      </optional>
+
+    </interleave>
+  </define>
+
+  <define name="RowEntriesSection">
+    <oneOrMore>
+      <element name="TableRowEntry">
+        <ref name="RowEntryDefinition"/>
+      </element>
+    </oneOrMore>
+  </define>
+  
+  <define name="RowEntryDefinition">
+    <interleave>
+      
+      <optional>
+        <element name="EntrySelectedBy">
+          <ref name="AppliesToSectionWithSelectionCondition"/>
+        </element>
+      </optional>
+      
+      <optional>
+        <element name="TableColumnItems">
+          <ref name="ColumnEntries"/>
+        </element>
+      </optional>
+      
+      <optional>
+        <element name="Wrap">
+          <ref name="BooleanValue"/>
+        </element>
+      </optional>
+
+    </interleave>
+  </define>
+
+  <define name="ColumnEntries">
+    <zeroOrMore>
+      <element name="TableColumnItem">
+        <ref name="ColumnEntry"/>
+      </element>
+    </zeroOrMore>
+  </define>
+
+  <define name="ColumnEntry">
+    <interleave>
+
+      <ref name="ViewEntryNodeMatch"/>
+      
+      <optional>
+        <element name="Alignment">
+          <ref name="AlignmentValue"/>
+        </element>
+      </optional>
+      
+    </interleave>
+  </define>
+
+  <define name="ViewEntryNodeMatch">
+    <choice>
+      
+      <interleave>
+        
+        <ref name="ExpressionNodeMatch"/>
+        
+        <optional>
+          <element name="FormatString">
+            <ref name="MandatoryString"/>
+          </element>
+        </optional>
+        
+      </interleave>
+      
+      <element name="Text">
+        <ref name="TextToken"/>
+      </element>
+      
+    </choice>
+  </define>
+
+  <define name="ListControl">
+    <element name="ListEntries">
+      <ref name="ListControlEntries"/>
+    </element>
+  </define>
+
+  <define name="ListControlEntries">
+    <oneOrMore>
+      
+      <element name="ListEntry">
+        <ref name="ListControlEntryDefinition"/>
+      </element>
+      
+    </oneOrMore>
+  </define>
+
+  <define name="ListControlEntryDefinition">
+    <interleave>
+      
+      <optional>
+        <element name="EntrySelectedBy">
+          <ref name="AppliesToSectionWithSelectionCondition"/>
+        </element>
+      </optional>
+      
+      <element name="ListItems">
+        <ref name="ListControlItemDefinitions"/>
+      </element>
+      
+    </interleave>
+  </define>
+
+  <define name="ListControlItemDefinitions">
+    <oneOrMore>
+      <element name="ListItem">
+        <ref name="ListControlItemDefinition"/>
+      </element>
+    </oneOrMore>
+  </define>
+
+  <define name="ListControlItemDefinition">
+    <interleave>
+      
+      <ref name="ViewEntryNodeMatch"/>
+      
+      <optional>
+        <element name="ItemSelectionCondition">
+          <ref name="ItemSelectionCondition"/>
+        </element>
+      </optional>
+      
+      <optional>
+        <element name="Label">
+          <ref name="TextToken"/>
+        </element>
+      </optional>
+      
+    </interleave>
+  </define>
+
+  <define name="WideControl">
+    <interleave>
+
+      <optional>
+        <choice>
+          
+          <element name="AutoSize">
+            <ref name="BooleanValue"/>
+          </element>
+          
+          <element name="ColumnNumber">
+            <data type="positiveInteger"/>
+          </element>
+          
+        </choice>
+
+      </optional>
+
+      <element name="WideEntries">
+        <ref name="WideControlEntries"/>
+      </element>
+
+    </interleave>
+  </define>
+
+  <define name="WideControlEntries">
+    <oneOrMore>
+      <element name="WideEntry">
+        <ref name="WideControlEntry"/>
+      </element>
+    </oneOrMore>
+  </define>
+
+  <define name="WideControlEntry">
+    <interleave>
+      <optional>
+        <element name="EntrySelectedBy">
+          <ref name="AppliesToSectionWithSelectionCondition"/>
+        </element>
+      </optional>
+  
+      <element name="WideItem">
+        <ref name="PropertyEntry"/>        
+      </element>
+
+    </interleave>
+  </define>
+
+  <define name="PropertyEntry">
+    <ref name="ViewEntryNodeMatch"/>
+  </define>
+
+  <define name="ControlDefinitions">
+    <zeroOrMore>
+      <element name="Control">
+        <ref name="ControlDefinition"/>
+      </element>
+    </zeroOrMore>
+  </define>
+
+  <define name="ControlDefinition">
+    <interleave>
+      
+      <element name="Name">
+        <ref name="MandatoryString"/>
+      </element>
+      
+      <element name="CustomControl">
+        <ref name="ComplexControl"/>
+      </element>
+      
+    </interleave>
+  </define>
+
+  <define name="ComplexControl">
+    <element name="CustomEntries">
+      <ref name="ComplexControlEntries"/>
+    </element>
+  </define>
+
+  <define name="ItemSelectionCondition">
+    <ref name="ExpressionNodeMatch"/>
+  </define>
+
+  <define name="AppliesToSection">
+    <oneOrMore>
+      <choice>
+        
+        <element name="SelectionSetName">
+          <ref name="MandatoryString"/> 
+        </element>
+
+        <element name="TypeName">
+          <ref name="MandatoryString"/>
+        </element>
+        
+      </choice>
+    </oneOrMore>
+  </define>
+
+  <define name="AppliesToSectionWithSelectionCondition">
+    <oneOrMore>
+      <choice>
+        
+        <element name="SelectionSetName">
+          <ref name="MandatoryString"/>
+        </element>
+
+        <element name="TypeName">
+          <ref name="MandatoryString"/>
+        </element>
+
+        <element name="SelectionCondition">
+          <ref name="SelectionConditionNode"/>
+        </element>
+        
+      </choice>
+    </oneOrMore>
+  </define>
+
+  <define name="SelectionConditionNode">
+    <interleave>
+      
+      <choice>
+        
+        <element name="SelectionSetName">
+          <ref name="MandatoryString"/>
+        </element>
+
+        <element name="TypeName">
+          <ref name="MandatoryString"/>
+        </element>
+        
+      </choice>
+
+      <ref name="ExpressionNodeMatch"/>
+      
+    </interleave>
+  </define>
+  
+  <define name="TypeGroups">
+    <zeroOrMore>
+      <element name="SelectionSet">
+        <ref name="TypeGroup"/>
+      </element>
+    </zeroOrMore>
+  </define>
+
+  <define name="TypeGroup">
+    <interleave>
+      
+      <element name="Name">
+        <ref name="MandatoryString"/>
+      </element>
+      
+      <zeroOrMore>
+        <element name="Types">
+          <ref name="TypeGroupTypeRefs"/>
+        </element>
+      </zeroOrMore>
+      
+    </interleave>
+  </define>
+
+  <define name="TypeGroupTypeRefs">
+    <zeroOrMore>
+      <element name="TypeName">
+        <ref name="MandatoryString"/>
+      </element>
+    </zeroOrMore>
+  </define>
+
+  <define name="Controls">
+    <element name="Controls">
+
+      <zeroOrMore>
+        <ref name="Control"/>
+      </zeroOrMore>
+
+    </element>
+  </define>
+
+  <define name="Control">
+    <element name="Control">
+
+      <element name="Name">
+        <text/>
+      </element>
+
+      <ref name="CustomControl"/>
+
+    </element>
+  </define>
+
+  <define name="ExpressionNodeMatch">
+    <choice>
+      <element name="PropertyName">
+        <ref name="MandatoryString"/>
+      </element>
+
+      <element name="ScriptBlock">
+        <ref name="MandatoryString"/>
+      </element>
+    </choice>
+  </define>
+
+  <define name="CompoundProperty">
+    <interleave>
+
+      <!-- PropertyBaseHelper -->
+      <optional>
+        <ref name="ExpressionNodeMatch"/>
+      </optional>
+      
+      <optional>
+        <element name="EnumerateCollection">
+          <ref name="BooleanValue"/>
+        </element>
+      </optional>
+
+      <optional>
+        <element name="ItemSelectionCondition">
+          <ref name="ItemSelectionCondition"/>
+        </element>
+      </optional>
+      <!-- /PropertyBaseHelper -->
+      
+      <optional>
+        <choice>
+          
+          <ref name="ComplexControlMatch"/>
+          
+          <element name="FieldControl">
+            <ref name="MandatoryString"/>
+          </element>
+          
+        </choice>
+      </optional>
+      
+    </interleave>
+  </define>
+
+  <define name="ComplexControlMatch">
+    <choice>
+
+      <element name="CustomControl">
+        <ref name="CustomControl"/>
+      </element>
+
+      <element name="CustomControlName">
+        <ref name="MandatoryString"/>
+      </element>
+
+    </choice>
+  </define>
+
+  <define name="CustomControl">
+    <element name="CustomEntries">
+      <ref name="ComplexControlEntries"/>
+    </element>
+  </define>
+
+  <define name="ComplexControlEntries">
+    <oneOrMore>
+      <element name="CustomEntry">
+        <ref name="ComplexControlEntryDefinition"/>
+      </element>
+    </oneOrMore>    
+  </define>
+
+  <define name="ComplexControlEntryDefinition">
+    <interleave>
+      
+      <optional>
+        <element name="EntrySelectedBy">
+          <ref name="AppliesToSectionWithSelectionCondition"/>
+        </element>
+      </optional>
+      
+      <element name="CustomItem">
+        <ref name="ComplexControlTokenListDefinitions"/>
+      </element>
+      
+    </interleave>
+  </define>
+
+  <define name="ComplexControlTokenListDefinitions">
+    <oneOrMore>
+      <choice>
+        
+        <element name="ExpressionBinding">
+          <ref name="CompoundProperty"/>
+        </element>
+        
+        <element name="NewLine">
+          <empty/>
+        </element>
+        
+        <element name="Text">
+          <ref name="TextToken"/>
+        </element>
+        
+        <element name="Frame">
+          <ref name="FrameDefinition"/>
+        </element>
+      
+      </choice>
+    </oneOrMore>
+  </define>
+
+  <define name="TextToken">
+    <choice>
+      
+      <ref name="MandatoryString"/>
+      
+      <group>
+        
+        <attribute name="AssemblyName">
+          <ref name="MandatoryString"/>
+        </attribute>
+        
+        <attribute name="BaseName">
+          <ref name="MandatoryString"/>
+        </attribute>
+        
+        <attribute name="ResourceId">
+          <ref name="MandatoryString"/>
+        </attribute>
+        
+      </group>
+      
+    </choice>
+  </define>
+
+  <define name="FrameDefinition">
+    <interleave>
+
+      <optional>
+        <element name="LeftIndent">
+          <data type="nonNegativeInteger"/>
+        </element>
+      </optional>
+
+      <optional>
+        <element name="RightIndent">
+          <data type="nonNegativeInteger"/>
+        </element>
+      </optional>
+
+      <optional>
+        <choice>
+          
+          <element name="FirstLineIndent">
+            <data type="nonNegativeInteger"/>
+          </element>
+          
+          <element name="FirstLineHanging">
+            <data type="nonNegativeInteger"/>
+          </element>
+          
+        </choice>
+      </optional>
+
+      <element name="CustomItem">
+        <ref name="ComplexControlTokenListDefinitions"/>
+      </element>
+
+    </interleave>
+  </define>
+
+  <define name="DefaultSettings">
+    <interleave>
+
+      <optional>
+        <element name="ShowError">
+          <ref name="BooleanValue"/>
+        </element>
+      </optional>
+
+      <optional>
+        <element name="DisplayError">
+          <ref name="BooleanValue"/>
+        </element>
+      </optional>
+
+      <optional>
+        <element name="PropertyCountForTable">
+          <data type="positiveInteger"/>
+        </element>
+      </optional>
+      
+      <optional>
+        <element name="WrapTables">
+          <ref name="BooleanValue"/>
+        </element>
+      </optional>
+
+      <optional>
+        <element name="EnumerableExpansions">
+          <ref name="EnumerableExpansionDirectiveList"/>
+        </element>
+      </optional>
+
+    </interleave>
+  </define>
+
+  <define name="EnumerableExpansionDirectiveList">
+    <zeroOrMore>
+      <element name="EnumerableExpansion">
+        <ref name="EnumerableExpansionDirective"/>
+      </element>
+    </zeroOrMore>
+  </define>
+  
+  <define name="EnumerableExpansionDirective">
+    <interleave>
+
+      <optional>
+        <element name="EntrySelectedBy">
+          <ref name="AppliesToSectionWithSelectionCondition"/>
+        </element>
+      </optional>
+
+      <optional>
+        <element name="Expand">
+          <ref name="EnumerableExpansionValue"/>
+        </element>
+      </optional>
+
+    </interleave>
+  </define>
+  
+  <define name="EnumerableExpansionValue">
+    <choice>
+      <value>CoreOnly</value>
+      <value>EnumOnly</value>
+      <value>Both</value>
+      
+      <data type="string">
+        <param name="pattern">[Cc][Oo][Rr][Ee][Oo][Nn][Ll][Yy]</param>
+      </data>
+      <data type="string">
+        <param name="pattern">[Ee][Nn][Uu][Mm][Oo][Nn][Ll][Yy]</param>
+      </data>
+      <data type="string">
+        <param name="pattern">[Bb][Oo][Tt][Hh]</param>
+      </data>
+    </choice>
+  </define>
+  
+  <define name="BooleanValue">
+    <choice>
+      <empty/>
+      <value>True</value>
+      <value>False</value>
+      <data type="string">
+        <param name="pattern">[Tt][Rr][Uu][Ee]</param>
+      </data>
+      <data type="string">
+        <param name="pattern">[Ff][Aa][Ll][Ss][Ee]</param>
+      </data>
+    </choice>
+  </define>
+  
+  <define name="AlignmentValue">
+    <choice>
+      <value>Left</value>
+      <value>Right</value>
+      <value>Center</value>
+      <data type="string">
+        <param name="pattern">[Ll][Ee][Ff][Tt]</param>
+      </data>
+      <data type="string">
+        <param name="pattern">[Rr][Ii][Gg][Hh][Tt]</param>
+      </data>
+      <data type="string">
+        <param name="pattern">[Cc][Ee][Nn][Tt][Ee][Rr]</param>
+      </data>
+    </choice>
+  </define>
+  
+  <define name="MandatoryString">
+    <data type="string">
+      <param name="minLength">1</param>
+    </data>
+  </define>
+
+</grammar>
